@@ -82,7 +82,7 @@ function renderRuleta(rotacion = 0) {
 
 // Mostrar ganador
 function mostrarGanador(nombre) {
-  mensaje.textContent = ` 🎉 ¡El ganador es: ${nombre}! 🎉 `;
+  mensaje.textContent = `  ¡El ganador es: ${nombre}!  `;
   mensaje.style.transform = 'scale(1.2)';
   setTimeout(() => mensaje.style.transform = 'scale(1)', 500);
 }
@@ -158,12 +158,13 @@ sortearBtn.addEventListener('click', () => {
     if (t < 1) requestAnimationFrame(animar);
     else {
       const n = disponibles.length;
-      const anguloFinal = (rotacionDestino % 360 + 360) % 360;
-      const anguloPorSegmento = 360 / n;
-    
-        // La flecha apunta arriba, 270°
-        let indexGanador = Math.floor(((anguloFinal + anguloPorSegmento / 2 - 270 + 360) % 360) / anguloPorSegmento);
-        indexGanador = (n - indexGanador) % n; // invertimos sentido horario
+       // Ganador correcto
+        const anguloFinal = rotacionDestino % 360;
+        const anguloPorSegmento = 360 / disponibles.length;
+
+        // Ajustamos con la flecha apuntando hacia arriba (270°)
+        let anguloRelativo = (anguloFinal - 270 + 360) % 360;
+        const indexGanador = Math.floor((disponibles.length - (anguloRelativo / anguloPorSegmento)) % disponibles.length);
         const ganador = disponibles[indexGanador];
 
       // Guardamos como ganador actual
