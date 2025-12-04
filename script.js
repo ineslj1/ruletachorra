@@ -1,6 +1,6 @@
 const input = document.getElementById('nombre-input');
 const agregarBtn = document.getElementById('agregar');
-const ruleta = document.getElementById('ruleta');
+const ruleta = document.getElementById('ruletaCanvas');
 const sortearBtn = document.getElementById('sortear');
 const mensaje = document.getElementById('mensaje-ganador');
 const canvas = document.getElementById('ruletaCanvas');
