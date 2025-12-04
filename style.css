@@ -34,8 +34,8 @@ body {
 
 .ruleta-container {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 500px;  /* aumentamos el diámetro */
+  height: 500px; /* aumentamos el diámetro */
 }
 
 h1 {
@@ -118,7 +118,7 @@ h1 {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 10px solid #fff0f5;
+  border: 12px solid #fff0f5; /* borde más visible */
   position: relative;
   overflow: hidden;
   transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
@@ -134,11 +134,17 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1em;
+  font-size: 1.2em; /* fuente más grande */
   background: #ffb6c1aa;
   border: 1px solid #fff;
   border-radius: 0 100% 0 0;
   flex-direction: column;
+  padding: 5px; /* espacio interno */
+}
+
+.segmento span {
+  word-wrap: break-word; /* para nombres largos */
+  text-align: center;
 }
 
 .flecha {
