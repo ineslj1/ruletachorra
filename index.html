@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MiniGame Cute</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Name Picker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+
+        <h1>✨ Selector de Nombres Cute ✨</h1>
+
+        <!-- Input de nombres -->
+        <div class="input-section">
+            <textarea id="nameInput" placeholder="Escribe un nombre por línea"></textarea>
+            <button id="startBtn">¡Comenzar!</button>
+        </div>
+
+        <!-- Sección de juego -->
+        <div class="game-section hidden">
+            <div id="winner" class="winner-card"></div>
+            <button id="pickBtn">🎯 Elegir Nombre</button>
+            <div id="remaining" class="remaining-list"></div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
