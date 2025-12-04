@@ -3,6 +3,8 @@ const agregarBtn = document.getElementById('agregar');
 const ruleta = document.getElementById('ruleta');
 const sortearBtn = document.getElementById('sortear');
 const mensaje = document.getElementById('mensaje-ganador');
+const canvas = document.getElementById('ruletaCanvas');
+const ctx = canvas.getContext('2d');
 
 let nombres = [];
 let disponibles = [];
@@ -22,34 +24,49 @@ const monigotes = [
 
 
 function renderRuleta() {
-  ruleta.innerHTML = "";
   const n = disponibles.length;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   if (n === 0) return;
 
-  const anguloPorSegmento = 360 / n;
+  const step = (2 * Math.PI) / n;
+  const cx = 300;
+  const cy = 300;
+  const r = 290;
 
   disponibles.forEach((nombre, i) => {
-    const seg = document.createElement("div");
-    seg.className = "segmento";
+    const start = i * step;
+    const end = start + step;
 
-    const angulo = i * anguloPorSegmento;
-    const icon = monigotes[i % monigotes.length];
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = `hsl(${(i * 360) / n}, 70%, 80%)`;
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 3;
+    ctx.stroke();
 
-    // Necesario para que el contenido quede derecho
-    seg.style.setProperty("--segment-rotation", `${anguloPorSegmento}deg`);
+    // Imagen kawaii
+    const mid = start + step / 2;
+    const img = new Image();
+    img.src = `assets/img/monigotes/${monigotes[i % monigotes.length]}`;
+    img.onload = () => {
+      const ix = cx + Math.cos(mid) * 160 - 30;
+      const iy = cy + Math.sin(mid) * 160 - 30;
+      ctx.drawImage(img, ix, iy, 60, 60);
+    };
 
-    seg.style.transform = `rotate(${angulo}deg)`;
-
-    seg.style.background = `hsl(${(i * 360) / n}, 70%, 85%)`;
-
-    seg.innerHTML = `
-      <div class="segmento-content">
-        <img src="assets/img/monigotes/${icon}" class="icono-kawaii">
-        <span>${nombre}</span>
-      </div>
-    `;
-
-    ruleta.appendChild(seg);
+    // Nombre
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(mid);
+    ctx.textAlign = "center";
+    ctx.font = "20px Comic Sans MS";
+    ctx.fillStyle = "#333";
+    ctx.fillText(nombre, 120, 7);
+    ctx.restore();
   });
 }
 
