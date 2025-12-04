@@ -111,41 +111,39 @@ sortearBtn.addEventListener('click', () => {
     return;
   }
 
-  const step = 360 / n; // grados por sector
-  const ganadorIndex = Math.floor(Math.random() * n);
-  const ganador = disponibles[ganadorIndex];
-
-  // Calculamos rotación para que la flecha apunte al ganador
+  const anguloPorSegmento = 360 / n;
   const vueltas = Math.floor(Math.random() * 5) + 5; // 5 a 9 vueltas
-  const anguloDestino = vueltas * 360 + (360 - (ganadorIndex * step + step / 2));
+
+  // Elegimos un índice al azar
+  const ganadorIndex = Math.floor(Math.random() * n);
+
+  // Calculamos la rotación para que la flecha apunte al centro del sector elegido
+  const anguloDestino = vueltas * 360 + anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2;
 
   rotacionTotal += anguloDestino;
 
-  // Animación de giro
-  canvas.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
-  canvas.style.transform = `rotate(${rotacionTotal}deg)`;
+  // Rotación de la ruleta
+  ruleta.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
+  ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
 
-  // Cuando termina la rotación
-setTimeout(() => {
-  // Eliminar ganador de disponibles
-  disponibles.splice(ganadorIndex, 1);
-  renderRuleta();
-  mostrarGanador(ganador);
-
+  // Animación de flecha apuntando al ganador por 2s
   const flecha = document.querySelector('.flecha');
-
-  // Hacer que la flecha suba suavemente
-  flecha.style.transition = 'transform 2s ease-out'; // 2 segundos
-  flecha.style.transform = 'translateX(-50%) translateY(-15px)';
-
-  // Después de 2 segundos vuelve suavemente
+  flecha.style.transition = 'transform 0.5s ease';
   setTimeout(() => {
-    flecha.style.transform = 'translateX(-50%) translateY(0)';
-  }, 2000);
+    mostrarGanador(disponibles[ganadorIndex]);
 
-}, 6200);
+    // Flecha “celebra” 2s
+    flecha.style.transform = 'translateX(-50%) translateY(-15px)';
+    setTimeout(() => {
+      flecha.style.transform = 'translateX(-50%) translateY(0)';
+    }, 2000);
 
+    // Eliminamos al ganador y renderizamos ruleta
+    disponibles.splice(ganadorIndex, 1);
+    renderRuleta();
+  }, 6200); // coincide con la duración de la animación
 });
+
 
 // Render inicial
 renderRuleta();
