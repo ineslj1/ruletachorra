@@ -12,6 +12,7 @@ let nombres = [];
 let disponibles = [];
 let rotacionActual = 0;
 let animando = false;
+let ganadorActual = null; // El ganador que queda seleccionado hasta que se gire otra vez
 
 // Monigotes PNG
 const monigotes = [
@@ -117,6 +118,16 @@ sortearBtn.addEventListener('click', () => {
     return;
   }
 
+  // Si hay un ganador actual, eliminarlo antes de girar
+  if (ganadorActual) {
+    const index = disponibles.indexOf(ganadorActual);
+    if (index !== -1) disponibles.splice(index, 1);
+    ganadorActual = null;
+    renderRuleta(rotacionActual);
+    // Si no quedan nombres después de eliminar, no girar
+    if (disponibles.length === 0) return;
+  }
+
   animando = true;
 
   const vueltas = Math.floor(Math.random() * 5) + 5;
@@ -137,33 +148,33 @@ sortearBtn.addEventListener('click', () => {
 
     if (t < 1) requestAnimationFrame(animar);
     else {
-      const anguloFinal = (rotacionDestino % 360 + 360) % 360; // normalizar 0-360
+      const n = disponibles.length;
+      const anguloFinal = (rotacionDestino % 360 + 360) % 360;
       const anguloPorSegmento = 360 / n;
 
-      // En canvas el 0° está a la derecha, nuestra flecha apunta "arriba" = 270°
       let anguloRelativo = (270 - anguloFinal + 360) % 360;
-
       const indexGanador = Math.floor(anguloRelativo / anguloPorSegmento);
       const ganador = disponibles[indexGanador];
 
+      // Guardamos como ganador actual
+      ganadorActual = ganador;
+
       mostrarGanador(ganador);
 
-      // Flecha celebra 2s
+      // Flecha permanece levantada mientras no se gire otra vez
       flecha.style.transform = 'translateX(-50%) translateY(-15px)';
-      setTimeout(() => {
-        flecha.style.transform = 'translateX(-50%) translateY(0)';
-      }, 2000);
 
-      // Eliminar ganador y actualizar ruleta
-      disponibles.splice(indexGanador, 1);
+      // Actualizamos rotación
       rotacionActual = rotacionDestino % 360;
       renderRuleta(rotacionActual);
+
       animando = false;
     }
   }
 
   requestAnimationFrame(animar);
 });
+
 
 
 // Render inicial
