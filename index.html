@@ -3,26 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ruleta de Nombres Kawaii 🍓</title>
+<title>Ruleta Kawaii</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-  <h1>🎀 Ruleta Kawaii 🎀</h1>
+  <!-- Columna izquierda: controles y lista de nombres -->
+  <div class="left-panel">
+    <h1>🎀 Ruleta de Nombres Kawaii 🎀</h1>
+    <div class="input-nombres">
+      <input type="text" id="nombre-input" placeholder="Escribe un nombre y presiona Enter">
+      <button id="agregar">➕</button>
+    </div>
 
-  <div class="input-nombres">
-    <input type="text" id="nombre-input" placeholder="Escribe un nombre y presiona Enter">
-    <button id="agregar">➕</button>
+    <div id="mensaje-ganador" class="mensaje-ganador"></div>
+
+    <button id="sortear">🎉 Girar Ruleta 🎉</button>
   </div>
 
-  <div class="ruleta-container">
-    <div class="ruleta" id="ruleta"></div>
-    <!-- Flecha kawaii: corazón -->
-    <div class="flecha">💖</div>
+  <!-- Columna derecha: ruleta -->
+  <div class="right-panel">
+    <div class="ruleta-container">
+      <div class="ruleta" id="ruleta"></div>
+      <div class="flecha">💖</div>
+    </div>
   </div>
-
-
-  <button id="sortear">🎉 Girar Ruleta 🎉</button>
 </div>
 
 <script src="script.js"></script>

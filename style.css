@@ -1,18 +1,21 @@
 body {
   font-family: 'Comic Sans MS', cursive, sans-serif;
   background: #ffe4e1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-top: 50px;
   margin: 0;
+  padding: 20px;
 }
 
 .container {
-  text-align: center;
-  width: 90%;
-  max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Izquierda */
+.left-panel {
+  width: 40%;
 }
 
 h1 {
@@ -23,7 +26,6 @@ h1 {
 
 .input-nombres {
   display: flex;
-  justify-content: center;
   margin-bottom: 20px;
 }
 
@@ -52,47 +54,13 @@ h1 {
   background: #ff1493;
 }
 
-.ruleta-container {
-  position: relative;
-  margin: 0 auto 20px;
-  width: 300px;
-  height: 300px;
-}
-
-.ruleta {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 10px solid #fff0f5;
-  position: relative;
-  overflow: hidden;
-  transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-.segmento {
-  --n: 6;
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  top: 50%;
-  left: 50%;
-  transform-origin: 0% 0%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1em;
-  background: #ffb6c1aa;
-  border: 1px solid #fff;
-  border-radius: 0 100% 0 0;
-  flex-direction: column;
-}
-
-.flecha {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2em;
+.mensaje-ganador {
+  margin: 20px 0;
+  font-size: 1.5em;
+  color: #ff1493;
+  font-weight: bold;
+  transition: transform 0.3s;
+  min-height: 2em;
 }
 
 #sortear {
@@ -110,6 +78,47 @@ h1 {
 #sortear:active {
   transform: translateY(2px);
   box-shadow: 0 3px #ff1493;
+}
+
+/* Derecha */
+.right-panel {
+  width: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ruleta-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.ruleta {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 10px solid #fff0f5;
+  position: relative;
+  overflow: hidden;
+  transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.segmento {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0% 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1em;
+  background: #ffb6c1aa;
+  border: 1px solid #fff;
+  border-radius: 0 100% 0 0;
+  flex-direction: column;
 }
 
 .flecha {

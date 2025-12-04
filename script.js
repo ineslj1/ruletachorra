@@ -2,7 +2,7 @@ const input = document.getElementById('nombre-input');
 const agregarBtn = document.getElementById('agregar');
 const ruleta = document.getElementById('ruleta');
 const sortearBtn = document.getElementById('sortear');
-const container = document.querySelector('.container');
+const mensaje = document.getElementById('mensaje-ganador');
 
 let nombres = [];
 let disponibles = [];
@@ -10,9 +10,10 @@ let rotacionTotal = 0;
 
 function renderRuleta() {
   ruleta.innerHTML = '';
-  const n = disponibles.length; // solo nombres disponibles
+  const n = disponibles.length;
   if (n === 0) return;
-  
+
+  // Redistribuir todos los segmentos disponibles
   disponibles.forEach((nombre, i) => {
     const angulo = 360 / n * i;
     const seg = document.createElement('div');
@@ -24,24 +25,10 @@ function renderRuleta() {
   });
 }
 
-// Mostrar ganador en la interfaz (mensaje kawaii)
 function mostrarGanador(nombre) {
-  let mensaje = document.getElementById('mensaje-ganador');
-  if (!mensaje) {
-    mensaje = document.createElement('div');
-    mensaje.id = 'mensaje-ganador';
-    mensaje.style.margin = '20px 0';
-    mensaje.style.fontSize = '1.5em';
-    mensaje.style.color = '#ff1493';
-    mensaje.style.fontWeight = 'bold';
-    mensaje.style.transition = 'transform 0.3s';
-    container.appendChild(mensaje);
-  }
   mensaje.textContent = `🎉 ¡El ganador es: ${nombre}! 🎉`;
   mensaje.style.transform = 'scale(1.2)';
-  setTimeout(() => {
-    mensaje.style.transform = 'scale(1)';
-  }, 500);
+  setTimeout(() => mensaje.style.transform = 'scale(1)', 500);
 }
 
 // Agregar nombre
@@ -73,14 +60,14 @@ sortearBtn.addEventListener('click', () => {
   const ganador = disponibles[ganadorIndex];
 
   const anguloPorSegmento = 360 / n;
-  const anguloDestino = (Math.floor(Math.random() * 5) + 5) * 360 - (anguloPorSegmento * ganadorIndex + anguloPorSegmento/2);
+  const anguloDestino = (Math.floor(Math.random() * 5) + 5) * 360 - (anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2);
 
   rotacionTotal += anguloDestino;
   ruleta.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
   ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
 
   setTimeout(() => {
-    // eliminar ganador de disponibles
+    // eliminar ganador
     disponibles.splice(ganadorIndex, 1);
     renderRuleta();
     mostrarGanador(ganador);
