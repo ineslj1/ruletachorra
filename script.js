@@ -7,24 +7,29 @@ const mensaje = document.getElementById('mensaje-ganador');
 const canvas = document.getElementById('ruletaCanvas');
 const ctx = canvas.getContext('2d');
 
-// Datos
 let nombres = [];
 let disponibles = [];
-let rotacionActual = 0; // grados
+let rotacionActual = 0;
 let animando = false;
 
-// Monigotes PNG (en assets/img/monigotes/)
+// Monigotes PNG
 const monigotes = [
   "uno.png","dos.png","tres.png","cuatro.png","cinco.png",
   "seis.png","siete.png","ocho.png","nueve.png"
 ];
 
-// Dimensiones del canvas
+// Pre-cargar imágenes
+const imgs = monigotes.map(src => {
+  const img = new Image();
+  img.src = `assets/img/monigotes/${src}`;
+  return img;
+});
+
 const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radio = 290;
 
-// Dibujar ruleta rotada
+// Dibujar ruleta con rotación
 function renderRuleta(rotacion = 0) {
   const n = disponibles.length;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -36,7 +41,7 @@ function renderRuleta(rotacion = 0) {
     const start = i * step + rotacion * Math.PI / 180;
     const end = start + step;
 
-    // Dibujar sector
+    // Sector
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.arc(cx, cy, radio, start, end);
@@ -47,26 +52,22 @@ function renderRuleta(rotacion = 0) {
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Posición del contenido dentro del sector
+    // Contenido sector
     const mid = start + step / 2;
     const contentRadius = radio * 0.6;
     const ix = cx + Math.cos(mid) * contentRadius;
     const iy = cy + Math.sin(mid) * contentRadius;
 
-    // Imagen kawaii
-    const img = new Image();
-    img.src = `assets/img/monigotes/${monigotes[i % monigotes.length]}`;
-    img.onload = () => {
-      ctx.save();
-      ctx.translate(ix, iy - 10);
-      ctx.drawImage(img, -30, -30, 60, 60);
-      ctx.restore();
-    };
+    // Imagen kawaii ya cargada
+    const img = imgs[i % imgs.length];
+    ctx.save();
+    ctx.translate(ix, iy - 10);
+    ctx.drawImage(img, -30, -30, 60, 60);
+    ctx.restore();
 
     // Nombre
     ctx.save();
     ctx.translate(ix, iy + 35);
-    ctx.rotate(0);
     ctx.textAlign = "center";
     ctx.font = "18px Comic Sans MS";
     ctx.fillStyle = "#333";
@@ -94,12 +95,17 @@ agregarBtn.addEventListener('click', () => {
   }
 });
 
-// Enter para agregar
+// Enter
 input.addEventListener('keypress', e => {
   if (e.key === 'Enter') agregarBtn.click();
 });
 
-// Girar ruleta y seleccionar ganador
+// Easing cubic-out
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+// Girar ruleta
 sortearBtn.addEventListener('click', () => {
   if (animando) return;
   const n = disponibles.length;
@@ -114,22 +120,22 @@ sortearBtn.addEventListener('click', () => {
   const ganadorIndex = Math.floor(Math.random() * n);
 
   const rotacionDestino = rotacionActual + vueltas * 360 + anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2;
-  const duracion = 6000; // ms
+  const duracion = 6000;
   const inicio = performance.now();
 
   const flecha = document.querySelector('.flecha');
   flecha.style.transition = 'transform 0.5s ease';
 
   function animar(time) {
-    const t = Math.min((time - inicio) / duracion, 1);
-    const eased = t < 0.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1; // easing
-    rotacionActual = rotacionActual + (rotacionDestino - rotacionActual) * eased;
-    renderRuleta(rotacionActual);
+    let t = (time - inicio) / duracion;
+    t = Math.min(t, 1);
+    const eased = easeOutCubic(t);
+    const anguloActual = rotacionActual + (rotacionDestino - rotacionActual) * eased;
+    renderRuleta(anguloActual);
 
-    if (t < 1) {
-      requestAnimationFrame(animar);
-    } else {
-      // Mostrar ganador y animar flecha 2s
+    if (t < 1) requestAnimationFrame(animar);
+    else {
+      // Flecha celebra 2s
       mostrarGanador(disponibles[ganadorIndex]);
       flecha.style.transform = 'translateX(-50%) translateY(-15px)';
       setTimeout(() => {
@@ -138,6 +144,7 @@ sortearBtn.addEventListener('click', () => {
 
       // Eliminar ganador y actualizar ruleta
       disponibles.splice(ganadorIndex, 1);
+      rotacionActual = rotacionDestino % 360;
       renderRuleta(rotacionActual);
       animando = false;
     }
