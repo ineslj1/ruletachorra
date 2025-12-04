@@ -31,15 +31,18 @@ function renderRuleta() {
   if (n === 0) return;
 
   const step = (2 * Math.PI) / n;
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const r = 290;
 
   disponibles.forEach((nombre, i) => {
     const start = i * step;
     const end = start + step;
 
-    // Sector
+    // Dibujar sector
     ctx.beginPath();
     ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radio, start, end);
+    ctx.arc(cx, cy, r, start, end);
     ctx.closePath();
     ctx.fillStyle = `hsl(${(i * 360) / n}, 70%, 80%)`;
     ctx.fill();
@@ -47,27 +50,34 @@ function renderRuleta() {
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Imagen kawaii
+    // Posición del contenido dentro del sector
     const mid = start + step / 2;
+    const contentRadius = r * 0.6; // Más cerca del centro
+    const ix = cx + Math.cos(mid) * contentRadius;
+    const iy = cy + Math.sin(mid) * contentRadius;
+
+    // Imagen kawaii
     const img = new Image();
     img.src = `assets/img/monigotes/${monigotes[i % monigotes.length]}`;
     img.onload = () => {
-      const ix = cx + Math.cos(mid) * 160 - 30;
-      const iy = cy + Math.sin(mid) * 160 - 30;
-      ctx.drawImage(img, ix, iy, 60, 60);
+      ctx.save();
+      ctx.translate(ix, iy - 10); // subimos un poco para dejar espacio al nombre
+      ctx.drawImage(img, -30, -30, 60, 60);
+      ctx.restore();
     };
 
     // Nombre
     ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(mid);
+    ctx.translate(ix, iy + 35); // debajo de la imagen
+    ctx.rotate(0); // texto horizontal
     ctx.textAlign = "center";
-    ctx.font = "20px Comic Sans MS";
+    ctx.font = "18px Comic Sans MS";
     ctx.fillStyle = "#333";
-    ctx.fillText(nombre, 120, 7);
+    ctx.fillText(nombre, 0, 0);
     ctx.restore();
   });
 }
+
 
 // Mostrar ganador
 function mostrarGanador(nombre) {
