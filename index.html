@@ -25,7 +25,17 @@
   <div class="right-panel">
     <div class="ruleta-container">
       <canvas id="ruletaCanvas" width="600" height="600"></canvas>
-      <div class="flecha">💖</div>
+      <div class="flecha">
+        <svg width="50" height="50" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff69b4"/>
+                <stop offset="100%" stop-color="#ffb6c1"/>
+            </linearGradient>
+            </defs>
+            <path d="M32 0 L40 16 H34 V64 H30 V16 H24 Z" fill="url(#grad)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+     </div>
     </div>
   </div>
 </div>

@@ -153,8 +153,14 @@ h1 {
 }
 
 .flecha {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 1s infinite alternate;
   transition: transform 0.8s ease-out;
 }
+
 
 .icono-kawaii {
   width: 60px;
