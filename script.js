@@ -10,19 +10,16 @@ let rotacionTotal = 0;
 
 function renderRuleta() {
   ruleta.innerHTML = '';
-  const n = nombres.length;
-  nombres.forEach((nombre, i) => {
+  const n = disponibles.length; // solo nombres disponibles
+  if (n === 0) return;
+  
+  disponibles.forEach((nombre, i) => {
     const angulo = 360 / n * i;
     const seg = document.createElement('div');
     seg.classList.add('segmento');
     seg.style.transform = `rotate(${angulo}deg) translateX(50%)`;
     seg.style.background = `hsl(${angulo}, 70%, 80%)`;
     seg.innerHTML = `<span>${nombre}</span>`;
-    // Si el nombre ya fue elegido, se atenúa
-    if (!disponibles.includes(nombre)) {
-      seg.style.opacity = 0.3;
-      seg.style.filter = 'grayscale(80%)';
-    }
     ruleta.appendChild(seg);
   });
 }
@@ -66,28 +63,24 @@ input.addEventListener('keypress', e => {
 
 // Sortear
 sortearBtn.addEventListener('click', () => {
-  if (disponibles.length === 0) {
+  const n = disponibles.length;
+  if (n === 0) {
     mostrarGanador('¡Todos los nombres ya han sido elegidos! 🎀');
     return;
   }
 
-  const ganadorIndex = Math.floor(Math.random() * disponibles.length);
+  const ganadorIndex = Math.floor(Math.random() * n);
   const ganador = disponibles[ganadorIndex];
-  const n = nombres.length;
-  const indexGlobal = nombres.indexOf(ganador);
-  const anguloPorSegmento = 360 / n;
 
-  // Girar ruleta: varias vueltas + posición del ganador
-  const vueltas = Math.floor(Math.random() * 5) + 5;
-  const anguloDestino = vueltas * 360 - (anguloPorSegmento * indexGlobal + anguloPorSegmento / 2);
+  const anguloPorSegmento = 360 / n;
+  const anguloDestino = (Math.floor(Math.random() * 5) + 5) * 360 - (anguloPorSegmento * ganadorIndex + anguloPorSegmento/2);
 
   rotacionTotal += anguloDestino;
   ruleta.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
   ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
 
-  // Después de animación
   setTimeout(() => {
-    // Eliminar del grupo disponible
+    // eliminar ganador de disponibles
     disponibles.splice(ganadorIndex, 1);
     renderRuleta();
     mostrarGanador(ganador);
