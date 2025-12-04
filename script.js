@@ -108,6 +108,7 @@ function easeOutCubic(t) {
 }
 
 // Girar ruleta
+// Girar ruleta
 sortearBtn.addEventListener('click', () => {
   if (animando) return;
   const n = disponibles.length;
@@ -136,11 +137,13 @@ sortearBtn.addEventListener('click', () => {
 
     if (t < 1) requestAnimationFrame(animar);
     else {
-      // Determinar ganador exacto según la flecha arriba
-      const anguloFinal = (rotacionDestino % 360 + 360) % 360; // 0-360
+      const anguloFinal = (rotacionDestino % 360 + 360) % 360; // normalizar 0-360
       const anguloPorSegmento = 360 / n;
-      // La flecha apunta arriba: ajustamos
-      const indexGanador = Math.floor(((360 - anguloFinal + anguloPorSegmento / 2) % 360) / anguloPorSegmento);
+
+      // En canvas el 0° está a la derecha, nuestra flecha apunta "arriba" = 270°
+      let anguloRelativo = (270 - anguloFinal + 360) % 360;
+
+      const indexGanador = Math.floor(anguloRelativo / anguloPorSegmento);
       const ganador = disponibles[indexGanador];
 
       mostrarGanador(ganador);
@@ -161,6 +164,7 @@ sortearBtn.addEventListener('click', () => {
 
   requestAnimationFrame(animar);
 });
+
 
 // Render inicial
 renderRuleta(rotacionActual);
