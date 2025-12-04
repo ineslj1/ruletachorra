@@ -115,22 +115,26 @@ sortearBtn.addEventListener('click', () => {
   canvas.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
   canvas.style.transform = `rotate(${rotacionTotal}deg)`;
 
-  // Después de la animación
+  // Cuando termina la rotación
+setTimeout(() => {
+  // Eliminar ganador de disponibles
+  disponibles.splice(ganadorIndex, 1);
+  renderRuleta();
+  mostrarGanador(ganador);
+
+  const flecha = document.querySelector('.flecha');
+
+  // Hacer que la flecha suba suavemente
+  flecha.style.transition = 'transform 2s ease-out'; // 2 segundos
+  flecha.style.transform = 'translateX(-50%) translateY(-15px)';
+
+  // Después de 2 segundos vuelve suavemente
   setTimeout(() => {
-    // Eliminamos ganador
-    disponibles.splice(ganadorIndex, 1);
-    renderRuleta();
+    flecha.style.transform = 'translateX(-50%) translateY(0)';
+  }, 2000);
 
-    // Mostrar ganador
-    mostrarGanador(ganador);
+}, 6200);
 
-    // Pequeña animación de flecha “celebrando”
-    const flecha = document.querySelector('.flecha');
-    flecha.style.transform = 'translateX(-50%) translateY(-15px)';
-    setTimeout(() => {
-      flecha.style.transform = 'translateX(-50%) translateY(0)';
-    }, 2000);
-  }, 6200); // coincide con duración animación
 });
 
 // Render inicial
