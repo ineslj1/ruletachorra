@@ -1,31 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cute Name Picker</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruleta Kawaii 🍓</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-
-        <h1>✨ Selector de Nombres Cute ✨</h1>
-
-        <!-- Input de nombres -->
-        <div class="input-section">
-            <textarea id="nameInput" placeholder="Escribe un nombre por línea"></textarea>
-            <button id="startBtn">¡Comenzar!</button>
-        </div>
-
-        <!-- Sección de juego -->
-        <div class="game-section hidden">
-            <div id="winner" class="winner-card"></div>
-            <button id="pickBtn">🎯 Elegir Nombre</button>
-            <div id="remaining" class="remaining-list"></div>
-        </div>
-
-    </div>
-
-    <script src="script.js"></script>
+<div class="container">
+  <h1>🎀 Ruleta Kawaii 🎀</h1>
+  <div class="ruleta" id="ruleta">
+    <div class="segmento" style="--i:0;">🍓</div>
+    <div class="segmento" style="--i:1;">🍩</div>
+    <div class="segmento" style="--i:2;">🍬</div>
+    <div class="segmento" style="--i:3;">🍪</div>
+    <div class="segmento" style="--i:4;">🧸</div>
+    <div class="segmento" style="--i:5;">🍰</div>
+  </div>
+  <button id="girar">Girar 🎉</button>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
