@@ -22,25 +22,33 @@ const monigotes = [
 
 
 function renderRuleta() {
-  ruleta.innerHTML = '';
+  ruleta.innerHTML = "";
   const n = disponibles.length;
   if (n === 0) return;
 
-  // Redistribuir todos los segmentos disponibles (solo los que quedan)
+  const anguloPorSegmento = 360 / n;
+
   disponibles.forEach((nombre, i) => {
-    const angulo = 360 / n * i;
-    const color = `hsl(${(i * 360) / n}, 70%, 80%)`;
-    const seg = document.createElement('div');
-    seg.classList.add('segmento');
-    seg.style.background = color;
-    seg.style.transform = `rotate(${angulo}deg) translateX(50%)`;
-    // seg.style.background = `hsl(${angulo}, 70%, 80%)`;
+    const seg = document.createElement("div");
+    seg.className = "segmento";
+
+    const angulo = i * anguloPorSegmento;
     const icon = monigotes[i % monigotes.length];
 
+    // Necesario para que el contenido quede derecho
+    seg.style.setProperty("--segment-rotation", `${anguloPorSegmento}deg`);
+
+    seg.style.transform = `rotate(${angulo}deg)`;
+
+    seg.style.background = `hsl(${(i * 360) / n}, 70%, 85%)`;
+
     seg.innerHTML = `
-      <img src="assets/img/monigotes/${icon}" class="icono-kawaii">
-      <span>${nombre}</span>
+      <div class="segmento-content">
+        <img src="assets/img/monigotes/${icon}" class="icono-kawaii">
+        <span>${nombre}</span>
+      </div>
     `;
+
     ruleta.appendChild(seg);
   });
 }
