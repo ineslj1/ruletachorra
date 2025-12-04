@@ -1,40 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chibi Summoning Arena ✨</title>
-
-    <link rel="stylesheet" href="styles/base.css">
-    <link rel="stylesheet" href="styles/arena.css">
+  <meta charset="UTF-8">
+  <title>Chibi Battle Royale: Summon Edition</title>
+  <style>
+      body { margin: 0; background:#ffe7f7; }
+  </style>
 </head>
 
 <body>
-
-<header>
-    <h1>✨ Chibi Summoning Arena ✨</h1>
-</header>
-
-<main>
-    <section id="input-area">
-        <h2>Introduce los nombres del equipo</h2>
-
-        <textarea id="name-input" placeholder="Un nombre por línea..."></textarea>
-
-        <button id="load-names-btn">Cargar Chibis</button>
-        <button id="summon-btn" disabled>Invocar</button>
-
-        <p id="status"></p>
-    </section>
-
-    <section id="arena-container">
-        <img src="assets/images/circle-glow.png" id="circle" />
-        <div id="chibi-container"></div>
-        <canvas id="particle-canvas"></canvas>
-    </section>
-</main>
-
-<script type="module" src="scripts/main.js"></script>
-
+  <script src="phaser.min.js"></script>
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>
