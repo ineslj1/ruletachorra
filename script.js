@@ -2,6 +2,7 @@ const input = document.getElementById('nombre-input');
 const agregarBtn = document.getElementById('agregar');
 const ruleta = document.getElementById('ruleta');
 const sortearBtn = document.getElementById('sortear');
+const container = document.querySelector('.container');
 
 let nombres = [];
 let disponibles = [];
@@ -17,11 +18,33 @@ function renderRuleta() {
     seg.style.transform = `rotate(${angulo}deg) translateX(50%)`;
     seg.style.background = `hsl(${angulo}, 70%, 80%)`;
     seg.innerHTML = `<span>${nombre}</span>`;
+    // Si el nombre ya fue elegido, se atenúa
     if (!disponibles.includes(nombre)) {
-      seg.style.opacity = 0.4; // nombres ya elegidos
+      seg.style.opacity = 0.3;
+      seg.style.filter = 'grayscale(80%)';
     }
     ruleta.appendChild(seg);
   });
+}
+
+// Mostrar ganador en la interfaz (mensaje kawaii)
+function mostrarGanador(nombre) {
+  let mensaje = document.getElementById('mensaje-ganador');
+  if (!mensaje) {
+    mensaje = document.createElement('div');
+    mensaje.id = 'mensaje-ganador';
+    mensaje.style.margin = '20px 0';
+    mensaje.style.fontSize = '1.5em';
+    mensaje.style.color = '#ff1493';
+    mensaje.style.fontWeight = 'bold';
+    mensaje.style.transition = 'transform 0.3s';
+    container.appendChild(mensaje);
+  }
+  mensaje.textContent = `🎉 ¡El ganador es: ${nombre}! 🎉`;
+  mensaje.style.transform = 'scale(1.2)';
+  setTimeout(() => {
+    mensaje.style.transform = 'scale(1)';
+  }, 500);
 }
 
 // Agregar nombre
@@ -44,7 +67,7 @@ input.addEventListener('keypress', e => {
 // Sortear
 sortearBtn.addEventListener('click', () => {
   if (disponibles.length === 0) {
-    alert('Todos los nombres ya han sido elegidos!');
+    mostrarGanador('¡Todos los nombres ya han sido elegidos! 🎀');
     return;
   }
 
@@ -54,19 +77,20 @@ sortearBtn.addEventListener('click', () => {
   const indexGlobal = nombres.indexOf(ganador);
   const anguloPorSegmento = 360 / n;
 
-  // Girar ruleta: varias vueltas completas + posición del ganador
-  const vueltas = Math.floor(Math.random() * 5) + 5; // 5 a 9 vueltas
-  const anguloDestino = vueltas * 360 - (anguloPorSegmento * indexGlobal + anguloPorSegmento/2);
+  // Girar ruleta: varias vueltas + posición del ganador
+  const vueltas = Math.floor(Math.random() * 5) + 5;
+  const anguloDestino = vueltas * 360 - (anguloPorSegmento * indexGlobal + anguloPorSegmento / 2);
 
-  rotacionTotal += anguloDestino; // acumular rotación
+  rotacionTotal += anguloDestino;
   ruleta.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
   ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
 
   // Después de animación
   setTimeout(() => {
-    disponibles.splice(ganadorIndex, 1); // eliminar del grupo disponible
-    renderRuleta(); // actualizar ruleta
-    alert(`🎉 ¡El ganador es: ${ganador}! 🎉`);
+    // Eliminar del grupo disponible
+    disponibles.splice(ganadorIndex, 1);
+    renderRuleta();
+    mostrarGanador(ganador);
   }, 4200);
 });
 
