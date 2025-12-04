@@ -82,7 +82,7 @@ function renderRuleta(rotacion = 0) {
 
 // Mostrar ganador
 function mostrarGanador(nombre) {
-  mensaje.textContent = ` ¡El ganador es: ${nombre}! `;
+  mensaje.textContent = ` 🎉 ¡El ganador es: ${nombre}! 🎉 `;
   mensaje.style.transform = 'scale(1.2)';
   setTimeout(() => mensaje.style.transform = 'scale(1)', 500);
 }
@@ -110,7 +110,6 @@ function easeOutCubic(t) {
 }
 
 // Girar ruleta
-// Girar ruleta
 sortearBtn.addEventListener('click', () => {
   if (animando) return;
   const n = disponibles.length;
@@ -119,6 +118,7 @@ sortearBtn.addEventListener('click', () => {
     return;
   }
 
+  // Si hay un ganador actual, eliminarlo antes de girar
   if (ganadorActual) {
     const index = disponibles.indexOf(ganadorActual);
     if (index !== -1) disponibles.splice(index, 1);
@@ -138,8 +138,13 @@ sortearBtn.addEventListener('click', () => {
   const flecha = document.querySelector('.flecha');
 
   // AUDIO: iniciar al girar
-  sonidoRuleta.currentTime = 0;
-  sonidoRuleta.play();
+  if (sonidoRuleta.paused) {
+    sonidoRuleta.currentTime = 0;
+    const playPromise = sonidoRuleta.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => console.log("Error reproducir audio:", error));
+    }
+  }
 
   flecha.style.transition = 'transform 0.5s ease';
 
@@ -152,15 +157,21 @@ sortearBtn.addEventListener('click', () => {
 
     if (t < 1) requestAnimationFrame(animar);
     else {
+      const n = disponibles.length;
       const anguloFinal = (rotacionDestino % 360 + 360) % 360;
       const anguloPorSegmento = 360 / n;
-      let anguloRelativo = (270 - anguloFinal + 360) % 360;
-      const indexGanador = Math.floor(anguloRelativo / anguloPorSegmento);
+
+      // CALCULO CORRECTO DEL GANADOR
+      let indexGanador = Math.floor(((anguloFinal + anguloPorSegmento / 2) % 360) / anguloPorSegmento);
+      indexGanador = (n - indexGanador) % n;
       const ganador = disponibles[indexGanador];
 
+      // Guardamos como ganador actual
       ganadorActual = ganador;
 
       mostrarGanador(ganador);
+
+      // Flecha permanece levantada mientras no se gire otra vez
       flecha.style.transform = 'translateX(-50%) translateY(-15px)';
 
       // AUDIO: detener al terminar
@@ -178,9 +189,6 @@ sortearBtn.addEventListener('click', () => {
 
   requestAnimationFrame(animar);
 });
-
-
-
 
 // Render inicial
 renderRuleta(rotacionActual);
