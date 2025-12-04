@@ -4,6 +4,7 @@ const agregarBtn = document.getElementById('agregar');
 const sortearBtn = document.getElementById('sortear');
 const mensaje = document.getElementById('mensaje-ganador');
 const sonidoRuleta = document.getElementById('audio-ruleta');
+const sonidoGanador = new Audio('assets/sounds/ding.mp3');
 
 const canvas = document.getElementById('ruletaCanvas');
 const ctx = canvas.getContext('2d');
@@ -85,6 +86,23 @@ function mostrarGanador(nombre) {
   mensaje.textContent = `  ¡El ganador es: ${nombre}!  `;
   mensaje.style.transform = 'scale(1.2)';
   setTimeout(() => mensaje.style.transform = 'scale(1)', 500);
+  setTimeout(() => {
+  mostrarGanador(disponibles[ganadorIndex]);
+
+  // Reproducir sonido
+  sonidoGanador.play();
+
+  // Animación de flecha “celebrando”
+  flecha.style.transform = 'translateX(-50%) translateY(-15px)';
+  setTimeout(() => {
+    flecha.style.transform = 'translateX(-50%) translateY(0)';
+  }, 2000);
+
+  // Eliminar ganador y actualizar ruleta
+  disponibles.splice(ganadorIndex, 1);
+  renderRuleta();
+}, 6200);
+
 }
 
 // Agregar nombre
