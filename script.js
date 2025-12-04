@@ -160,11 +160,11 @@ sortearBtn.addEventListener('click', () => {
       const n = disponibles.length;
       const anguloFinal = (rotacionDestino % 360 + 360) % 360;
       const anguloPorSegmento = 360 / n;
-
-        // Ajustamos según que la flecha apunta hacia arriba (270°)
-        let anguloRelativo = (anguloFinal - 270 + 360) % 360;
-        const indexGanador = Math.floor(anguloRelativo / anguloPorSegmento);
-        const ganador = disponibles[(n - indexGanador) % n];
+    
+        // La flecha apunta arriba, 270°
+        let indexGanador = Math.floor(((anguloFinal + anguloPorSegmento / 2 - 270 + 360) % 360) / anguloPorSegmento);
+        indexGanador = (n - indexGanador) % n; // invertimos sentido horario
+        const ganador = disponibles[indexGanador];
 
       // Guardamos como ganador actual
       ganadorActual = ganador;
