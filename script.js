@@ -7,7 +7,7 @@ const mensaje = document.getElementById('mensaje-ganador');
 let nombres = [];
 let disponibles = [];
 let rotacionTotal = 0;
-// Lista de monigotes PNG kawaii (debes tenerlos en /img/monigotes/)
+// Lista de monigotes PNG kawaii (debes tenerlos en assets/img/monigotes/)
 const monigotes = [
   "uno.png",
   "dos.png",
@@ -17,6 +17,7 @@ const monigotes = [
   "seis.png",
   "siete.png",
   "ocho.png",
+  "nueve.png",
 ];
 
 
@@ -37,7 +38,7 @@ function renderRuleta() {
     const icon = monigotes[i % monigotes.length];
 
     seg.innerHTML = `
-      <img src="img/monigotes/${icon}" class="icono-kawaii">
+      <img src="assets/img/monigotes/${icon}" class="icono-kawaii">
       <span>${nombre}</span>
     `;
     ruleta.appendChild(seg);
