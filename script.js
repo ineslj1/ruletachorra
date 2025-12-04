@@ -1,28 +1,29 @@
+// Elementos del DOM
 const input = document.getElementById('nombre-input');
 const agregarBtn = document.getElementById('agregar');
-const ruleta = document.getElementById('ruletaCanvas');
 const sortearBtn = document.getElementById('sortear');
 const mensaje = document.getElementById('mensaje-ganador');
+
 const canvas = document.getElementById('ruletaCanvas');
 const ctx = canvas.getContext('2d');
 
+// Datos
 let nombres = [];
 let disponibles = [];
 let rotacionTotal = 0;
-// Lista de monigotes PNG kawaii (debes tenerlos en assets/img/monigotes/)
+
+// Monigotes PNG (en assets/img/monigotes/)
 const monigotes = [
-  "uno.png",
-  "dos.png",
-  "tres.png",
-  "cuatro.png",
-  "cinco.png",
-  "seis.png",
-  "siete.png",
-  "ocho.png",
-  "nueve.png",
+  "uno.png","dos.png","tres.png","cuatro.png","cinco.png",
+  "seis.png","siete.png","ocho.png","nueve.png"
 ];
 
+// Dimensiones del canvas
+const cx = canvas.width / 2;
+const cy = canvas.height / 2;
+const radio = 290;
 
+// Función para dibujar la ruleta
 function renderRuleta() {
   const n = disponibles.length;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -30,17 +31,15 @@ function renderRuleta() {
   if (n === 0) return;
 
   const step = (2 * Math.PI) / n;
-  const cx = 300;
-  const cy = 300;
-  const r = 290;
 
   disponibles.forEach((nombre, i) => {
     const start = i * step;
     const end = start + step;
 
+    // Sector
     ctx.beginPath();
     ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, start, end);
+    ctx.arc(cx, cy, radio, start, end);
     ctx.closePath();
     ctx.fillStyle = `hsl(${(i * 360) / n}, 70%, 80%)`;
     ctx.fill();
@@ -70,6 +69,7 @@ function renderRuleta() {
   });
 }
 
+// Mostrar ganador
 function mostrarGanador(nombre) {
   mensaje.textContent = `🎉 ¡El ganador es: ${nombre}! 🎉`;
   mensaje.style.transform = 'scale(1.2)';
@@ -93,7 +93,7 @@ input.addEventListener('keypress', e => {
   if (e.key === 'Enter') agregarBtn.click();
 });
 
-// Sortear
+// Girar ruleta y seleccionar ganador
 sortearBtn.addEventListener('click', () => {
   const n = disponibles.length;
   if (n === 0) {
@@ -101,27 +101,37 @@ sortearBtn.addEventListener('click', () => {
     return;
   }
 
+  const step = 360 / n; // grados por sector
   const ganadorIndex = Math.floor(Math.random() * n);
   const ganador = disponibles[ganadorIndex];
 
-  const anguloPorSegmento = 360 / n;
-
-  // Girar varias vueltas + posición del ganador
+  // Calculamos rotación para que la flecha apunte al ganador
   const vueltas = Math.floor(Math.random() * 5) + 5; // 5 a 9 vueltas
-  const anguloDestino = vueltas * 360 + anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2;
+  const anguloDestino = vueltas * 360 + (360 - (ganadorIndex * step + step / 2));
 
   rotacionTotal += anguloDestino;
 
-  // Duración más lenta: 6s
-  ruleta.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
-  ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
+  // Animación de giro
+  canvas.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
+  canvas.style.transform = `rotate(${rotacionTotal}deg)`;
 
+  // Después de la animación
   setTimeout(() => {
-    // eliminar ganador
+    // Eliminamos ganador
     disponibles.splice(ganadorIndex, 1);
     renderRuleta();
+
+    // Mostrar ganador
     mostrarGanador(ganador);
-  }, 6200); // coincide con la duración de la animación
+
+    // Pequeña animación de flecha “celebrando”
+    const flecha = document.querySelector('.flecha');
+    flecha.style.transform = 'translateX(-50%) translateY(-15px)';
+    setTimeout(() => {
+      flecha.style.transform = 'translateX(-50%) translateY(0)';
+    }, 2000);
+  }, 6200); // coincide con duración animación
 });
 
+// Render inicial
 renderRuleta();
