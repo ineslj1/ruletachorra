@@ -134,28 +134,29 @@ sortearBtn.addEventListener('click', () => {
 
     if (t < 1) requestAnimationFrame(animar);
     else {
-      // Calcular sector donde quedó la flecha
-      const anguloFinal = rotacionDestino % 360;
-      const anguloPorSegmento = 360 / n;
-      // Ajustamos: la flecha apunta hacia arriba (0°)
-      const indexGanador = Math.floor((n - (anguloFinal / 360) * n) % n);
-      const ganador = disponibles[indexGanador];
+    // Ajustamos 0° arriba
+    const anguloFinal = (rotacionDestino % 360 + 360) % 360; // 0-360
+    const anguloAjustado = (anguloFinal + 90) % 360; // 0° arriba
+    const anguloPorSegmento = 360 / n;
 
-      mostrarGanador(ganador);
+    const indexGanador = Math.floor(anguloAjustado / anguloPorSegmento);
+    const ganador = disponibles[indexGanador];
 
-      // Flecha celebra 2s
-      flecha.style.transform = 'translateX(-50%) translateY(-15px)';
-      setTimeout(() => {
+    mostrarGanador(ganador);
+
+    // Flecha celebra 2s
+    flecha.style.transform = 'translateX(-50%) translateY(-15px)';
+    setTimeout(() => {
         flecha.style.transform = 'translateX(-50%) translateY(0)';
-      }, 2000);
+    }, 2000);
 
-      // Eliminar ganador y actualizar ruleta
-      disponibles.splice(indexGanador, 1);
-      rotacionActual = rotacionDestino % 360;
-      renderRuleta(rotacionActual);
-      animando = false;
+    // Eliminar ganador y actualizar ruleta
+    disponibles.splice(indexGanador, 1);
+    rotacionActual = rotacionDestino % 360;
+    renderRuleta(rotacionActual);
+    animando = false;
     }
-  }
+ }
 
   requestAnimationFrame(animar);
 });
