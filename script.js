@@ -13,7 +13,7 @@ function renderRuleta() {
   const n = disponibles.length;
   if (n === 0) return;
 
-  // Redistribuir todos los segmentos disponibles
+  // Redistribuir todos los segmentos disponibles (solo los que quedan)
   disponibles.forEach((nombre, i) => {
     const angulo = 360 / n * i;
     const seg = document.createElement('div');
@@ -60,10 +60,15 @@ sortearBtn.addEventListener('click', () => {
   const ganador = disponibles[ganadorIndex];
 
   const anguloPorSegmento = 360 / n;
-  const anguloDestino = (Math.floor(Math.random() * 5) + 5) * 360 - (anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2);
+
+  // Girar varias vueltas + posición del ganador
+  const vueltas = Math.floor(Math.random() * 5) + 5; // 5 a 9 vueltas
+  const anguloDestino = vueltas * 360 + anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2;
 
   rotacionTotal += anguloDestino;
-  ruleta.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
+
+  // Duración más lenta: 6s
+  ruleta.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
   ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
 
   setTimeout(() => {
@@ -71,7 +76,7 @@ sortearBtn.addEventListener('click', () => {
     disponibles.splice(ganadorIndex, 1);
     renderRuleta();
     mostrarGanador(ganador);
-  }, 4200);
+  }, 6200); // coincide con la duración de la animación
 });
 
 renderRuleta();
