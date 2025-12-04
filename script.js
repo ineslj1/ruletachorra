@@ -3,6 +3,7 @@ const input = document.getElementById('nombre-input');
 const agregarBtn = document.getElementById('agregar');
 const sortearBtn = document.getElementById('sortear');
 const mensaje = document.getElementById('mensaje-ganador');
+const sonidoRuleta = document.getElementById('audio-ruleta');
 
 const canvas = document.getElementById('ruletaCanvas');
 const ctx = canvas.getContext('2d');
