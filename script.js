@@ -7,6 +7,18 @@ const mensaje = document.getElementById('mensaje-ganador');
 let nombres = [];
 let disponibles = [];
 let rotacionTotal = 0;
+// Lista de monigotes PNG kawaii (debes tenerlos en /img/monigotes/)
+const monigotes = [
+  "uno.png",
+  "dos.png",
+  "tres.png",
+  "cuatro.png",
+  "cinco.png",
+  "seis.png",
+  "siete.png",
+  "ocho.png",
+];
+
 
 function renderRuleta() {
   ruleta.innerHTML = '';
@@ -16,11 +28,18 @@ function renderRuleta() {
   // Redistribuir todos los segmentos disponibles (solo los que quedan)
   disponibles.forEach((nombre, i) => {
     const angulo = 360 / n * i;
+    const color = `hsl(${(i * 360) / n}, 70%, 80%)`;
     const seg = document.createElement('div');
     seg.classList.add('segmento');
+    seg.style.background = color;
     seg.style.transform = `rotate(${angulo}deg) translateX(50%)`;
-    seg.style.background = `hsl(${angulo}, 70%, 80%)`;
-    seg.innerHTML = `<span>${nombre}</span>`;
+    // seg.style.background = `hsl(${angulo}, 70%, 80%)`;
+    const icon = monigotes[i % monigotes.length];
+
+    seg.innerHTML = `
+      <img src="img/monigotes/${icon}" class="icono-kawaii">
+      <span>${nombre}</span>
+    `;
     ruleta.appendChild(seg);
   });
 }
