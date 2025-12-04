@@ -7,6 +7,7 @@ const mensaje = document.getElementById('mensaje-ganador');
 const canvas = document.getElementById('ruletaCanvas');
 const ctx = canvas.getContext('2d');
 
+// Datos
 let nombres = [];
 let disponibles = [];
 let rotacionActual = 0;
@@ -25,6 +26,7 @@ const imgs = monigotes.map(src => {
   return img;
 });
 
+// Dimensiones
 const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radio = 290;
@@ -58,7 +60,7 @@ function renderRuleta(rotacion = 0) {
     const ix = cx + Math.cos(mid) * contentRadius;
     const iy = cy + Math.sin(mid) * contentRadius;
 
-    // Imagen kawaii ya cargada
+    // Imagen kawaii
     const img = imgs[i % imgs.length];
     ctx.save();
     ctx.translate(ix, iy - 10);
@@ -95,7 +97,7 @@ agregarBtn.addEventListener('click', () => {
   }
 });
 
-// Enter
+// Enter para agregar
 input.addEventListener('keypress', e => {
   if (e.key === 'Enter') agregarBtn.click();
 });
@@ -117,7 +119,7 @@ sortearBtn.addEventListener('click', () => {
   animando = true;
 
   const vueltas = Math.floor(Math.random() * 5) + 5;
-  const anguloAleatorio = Math.random() * 360; // giro extra random
+  const anguloAleatorio = Math.random() * 360;
   const rotacionDestino = rotacionActual + vueltas * 360 + anguloAleatorio;
   const duracion = 6000;
   const inicio = performance.now();
@@ -134,33 +136,31 @@ sortearBtn.addEventListener('click', () => {
 
     if (t < 1) requestAnimationFrame(animar);
     else {
-    // Ajustamos 0° arriba
-    const anguloFinal = (rotacionDestino % 360 + 360) % 360; // 0-360
-    const anguloAjustado = (anguloFinal + 90) % 360; // 0° arriba
-    const anguloPorSegmento = 360 / n;
+      // Determinar ganador exacto según la flecha arriba
+      const anguloFinal = (rotacionDestino % 360 + 360) % 360; // 0-360
+      const anguloPorSegmento = 360 / n;
+      // La flecha apunta arriba: ajustamos
+      const indexGanador = Math.floor(((360 - anguloFinal + anguloPorSegmento / 2) % 360) / anguloPorSegmento);
+      const ganador = disponibles[indexGanador];
 
-    const indexGanador = Math.floor(anguloAjustado / anguloPorSegmento);
-    const ganador = disponibles[indexGanador];
+      mostrarGanador(ganador);
 
-    mostrarGanador(ganador);
-
-    // Flecha celebra 2s
-    flecha.style.transform = 'translateX(-50%) translateY(-15px)';
-    setTimeout(() => {
+      // Flecha celebra 2s
+      flecha.style.transform = 'translateX(-50%) translateY(-15px)';
+      setTimeout(() => {
         flecha.style.transform = 'translateX(-50%) translateY(0)';
-    }, 2000);
+      }, 2000);
 
-    // Eliminar ganador y actualizar ruleta
-    disponibles.splice(indexGanador, 1);
-    rotacionActual = rotacionDestino % 360;
-    renderRuleta(rotacionActual);
-    animando = false;
+      // Eliminar ganador y actualizar ruleta
+      disponibles.splice(indexGanador, 1);
+      rotacionActual = rotacionDestino % 360;
+      renderRuleta(rotacionActual);
+      animando = false;
     }
- }
+  }
 
   requestAnimationFrame(animar);
 });
-
 
 // Render inicial
 renderRuleta(rotacionActual);
