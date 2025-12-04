@@ -1,148 +1,204 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ruleta Mágica</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Círculo de Invocación Chibi</title>
 
 <style>
-    body {
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #ffd6f6, #d6e1ff);
-        text-align: center;
-        padding: 40px;
-        color: #444;
-    }
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #ffe0f7, #d7e7ff);
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    color: #5a4a70;
+}
 
-    h1 {
-        font-size: 2.2em;
-        margin-bottom: 15px;
-        color: #ff4fb0;
-        text-shadow: 0 0 10px #fff;
-    }
+/* Título */
+h1 {
+    font-size: 2.5em;
+    color: #ff78c4;
+    text-shadow: 0 0 10px #fff;
+}
 
-    textarea {
-        width: 80%;
-        height: 120px;
-        padding: 10px;
-        border-radius: 12px;
-        border: none;
-        outline: none;
-        font-size: 1em;
-        box-shadow: 0 0 10px #ffbde7;
-        margin-bottom: 10px;
-    }
+/* Input */
+textarea {
+    width: 80%;
+    height: 120px;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    box-shadow: 0 0 12px #ffbde7;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
 
-    button {
-        padding: 12px 25px;
-        margin: 10px;
-        border: none;
-        border-radius: 20px;
-        background: #ff7bd5;
-        color: white;
-        font-size: 1.1em;
-        cursor: pointer;
-        box-shadow: 0 0 15px #ff9be2;
-        transition: 0.2s;
-    }
+/* Botones */
+button {
+    padding: 14px 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    background: #ff90da;
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    box-shadow: 0 0 15px #ffb7e8;
+    transition: 0.2s;
+}
+button:hover {
+    transform: scale(1.09);
+    background: #ff6fd0;
+}
 
-    button:hover {
-        transform: scale(1.07);
-        background: #ff5cc6;
-    }
+/* Contenedor del círculo */
+#circleContainer {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    margin: 40px auto;
+}
 
-    #resultado {
-        margin-top: 25px;
-        font-size: 1.8em;
-        font-weight: bold;
-        color: #6b2fff;
-        text-shadow: 0 0 8px white;
-    }
+/* El círculo mágico */
+#circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 6px dashed #ffb9f1;
+    box-shadow: 0 0 25px #ffb4f5;
+    animation: rotateCircle 12s linear infinite;
+}
+@keyframes rotateCircle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-    .ruleta {
-        margin: 30px auto;
-        width: 220px;
-        height: 220px;
-        background: conic-gradient(#ff9be2, #9bb0ff, #a0ffe7, #ffd8a8, #ff9be2);
-        border-radius: 50%;
-        animation: girar 0s linear infinite paused;
-        box-shadow: 0 0 20px #ffffffaa;
-    }
+/* Burbujas con nombres */
+.bubble {
+    position: absolute;
+    padding: 10px 18px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 0 10px #ffcdf2;
+    font-weight: bold;
+    color: #714996;
+    animation: floaty 2s ease-in-out infinite;
+    transition: 0.3s;
+}
+@keyframes floaty {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
 
-    @keyframes girar {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
+/* Efecto seleccionado */
+.selected {
+    background: #ffd1f7;
+    box-shadow: 0 0 20px #ff9ff0;
+    transform: scale(1.2) rotate(3deg);
+}
 
-    .epico {
-        animation: brillo 0.5s ease-out;
-    }
-
-    @keyframes brillo {
-        0% { transform: scale(1); filter: brightness(1); }
-        50% { transform: scale(1.15); filter: brightness(2); }
-        100% { transform: scale(1); filter: brightness(1); }
-    }
+/* Rayo de invocación */
+#beam {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    width: 6px;
+    height: 0px;
+    background: linear-gradient(180deg, #ffb8f9, transparent);
+    transform: translateX(-50%);
+    transition: height 0.3s ease-out;
+    pointer-events: none;
+    opacity: 0;
+}
 </style>
 </head>
-
 <body>
-    <h1>🎀 Ruleta Mágica del Destino 🎀</h1>
 
-    <p>Escribe los nombres del equipo (uno por línea):</p>
-    <textarea id="lista"></textarea><br />
+<h1>🌸 Círculo de Invocación Chibi 🌸</h1>
 
-    <button onclick="cargarNombres()">Cargar nombres</button>
-    <button onclick="girarRuleta()">Girar ruleta</button>
+<p>Escribe los nombres (uno por línea):</p>
+<textarea id="inputNames"></textarea><br>
 
-    <div class="ruleta" id="ruleta"></div>
+<button onclick="crearBurbujas()">✨ Cargar nombres</button>
+<button onclick="invocar()">💖 Invocar al azar</button>
 
-    <div id="resultado"></div>
+<div id="circleContainer">
+    <div id="circle"></div>
+    <div id="beam"></div>
+</div>
+
+<h2 id="resultado"></h2>
 
 <script>
-    let nombres = [];
+let nombres = [];
 
-    function cargarNombres() {
-        const texto = document.getElementById("lista").value.trim();
-        nombres = texto.split("\n").map(n => n.trim()).filter(n => n);
+function crearBurbujas() {
+    const entrada = document.getElementById("inputNames").value.trim();
+    nombres = entrada.split("\n").map(n => n.trim()).filter(n => n);
 
-        if (nombres.length === 0) {
-            alert("❗ Agrega al menos un nombre.");
-            return;
-        }
+    const container = document.getElementById("circleContainer");
+    
+    // elimina viejas burbujas
+    document.querySelectorAll(".bubble").forEach(b => b.remove());
 
-        alert("✨ ¡Nombres cargados! ✨");
+    if (nombres.length === 0) {
+        alert("Necesitas escribir al menos un nombre 🌸");
+        return;
     }
 
-    function girarRuleta() {
-        if (nombres.length === 0) {
-            document.getElementById("resultado").textContent =
-                "🎉 ¡Juego terminado! No quedan nombres.";
-            return;
-        }
+    const radius = 140; // radio del círculo
+    const cx = 175, cy = 175; // centro
 
-        const ruleta = document.getElementById("ruleta");
-        ruleta.style.animationDuration = "0.4s";
-        ruleta.style.animationPlayState = "running";
+    nombres.forEach((name, i) => {
+        const angle = (i / nombres.length) * (2 * Math.PI);
+        const x = cx + radius * Math.cos(angle);
+        const y = cy + radius * Math.sin(angle);
 
-        setTimeout(() => {
-            ruleta.style.animationPlayState = "paused";
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.textContent = name;
+        bubble.style.left = `${x - 25}px`;
+        bubble.style.top = `${y - 15}px`;
 
-            const elegido = nombres[Math.floor(Math.random() * nombres.length)];
+        container.appendChild(bubble);
+    });
 
-            // Quitar el nombre elegido
-            nombres = nombres.filter(n => n !== elegido);
+    document.getElementById("resultado").textContent = "";
+}
 
-            const resultado = document.getElementById("resultado");
-            resultado.textContent = `✨ Nombre seleccionado: ${elegido} ✨`;
-            resultado.classList.add("epico");
-
-            setTimeout(() => {
-                resultado.classList.remove("epico");
-            }, 500);
-
-        }, 1600);
+function invocar() {
+    if (nombres.length === 0) {
+        document.getElementById("resultado").textContent = "🎉 ¡Todos han sido invocados!";
+        return;
     }
+
+    const bubbles = [...document.querySelectorAll(".bubble")];
+    const elegido = bubbles[Math.floor(Math.random() * bubbles.length)];
+
+    // efecto destacado
+    elegido.classList.add("selected");
+
+    // rayo cute
+    const beam = document.getElementById("beam");
+    beam.style.opacity = 1;
+    beam.style.height = "180px";
+    
+    setTimeout(() => {
+        // remover nombre de la lista y de la interfaz
+        nombres = nombres.filter(n => n !== elegido.textContent);
+        elegido.remove();
+
+        beam.style.height = "0px";
+        beam.style.opacity = 0;
+
+        document.getElementById("resultado").textContent =
+            `✨ Invocad@ → ${elegido.textContent} ✨`;
+
+    }, 800);
+}
 </script>
 
 </body>
