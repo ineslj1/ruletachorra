@@ -10,7 +10,8 @@ const ctx = canvas.getContext('2d');
 // Datos
 let nombres = [];
 let disponibles = [];
-let rotacionTotal = 0;
+let rotacionActual = 0; // grados
+let animando = false;
 
 // Monigotes PNG (en assets/img/monigotes/)
 const monigotes = [
@@ -23,26 +24,22 @@ const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radio = 290;
 
-// Función para dibujar la ruleta
-function renderRuleta() {
+// Dibujar ruleta rotada
+function renderRuleta(rotacion = 0) {
   const n = disponibles.length;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   if (n === 0) return;
 
   const step = (2 * Math.PI) / n;
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
-  const r = 290;
 
   disponibles.forEach((nombre, i) => {
-    const start = i * step;
+    const start = i * step + rotacion * Math.PI / 180;
     const end = start + step;
 
     // Dibujar sector
     ctx.beginPath();
     ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, start, end);
+    ctx.arc(cx, cy, radio, start, end);
     ctx.closePath();
     ctx.fillStyle = `hsl(${(i * 360) / n}, 70%, 80%)`;
     ctx.fill();
@@ -52,7 +49,7 @@ function renderRuleta() {
 
     // Posición del contenido dentro del sector
     const mid = start + step / 2;
-    const contentRadius = r * 0.6; // Más cerca del centro
+    const contentRadius = radio * 0.6;
     const ix = cx + Math.cos(mid) * contentRadius;
     const iy = cy + Math.sin(mid) * contentRadius;
 
@@ -61,15 +58,15 @@ function renderRuleta() {
     img.src = `assets/img/monigotes/${monigotes[i % monigotes.length]}`;
     img.onload = () => {
       ctx.save();
-      ctx.translate(ix, iy - 10); // subimos un poco para dejar espacio al nombre
+      ctx.translate(ix, iy - 10);
       ctx.drawImage(img, -30, -30, 60, 60);
       ctx.restore();
     };
 
     // Nombre
     ctx.save();
-    ctx.translate(ix, iy + 35); // debajo de la imagen
-    ctx.rotate(0); // texto horizontal
+    ctx.translate(ix, iy + 35);
+    ctx.rotate(0);
     ctx.textAlign = "center";
     ctx.font = "18px Comic Sans MS";
     ctx.fillStyle = "#333";
@@ -77,7 +74,6 @@ function renderRuleta() {
     ctx.restore();
   });
 }
-
 
 // Mostrar ganador
 function mostrarGanador(nombre) {
@@ -92,7 +88,7 @@ agregarBtn.addEventListener('click', () => {
   if (nombre && !nombres.includes(nombre)) {
     nombres.push(nombre);
     disponibles.push(nombre);
-    renderRuleta();
+    renderRuleta(rotacionActual);
     input.value = '';
     input.focus();
   }
@@ -105,45 +101,50 @@ input.addEventListener('keypress', e => {
 
 // Girar ruleta y seleccionar ganador
 sortearBtn.addEventListener('click', () => {
+  if (animando) return;
   const n = disponibles.length;
   if (n === 0) {
     mostrarGanador('¡Todos los nombres ya han sido elegidos! 🎀');
     return;
   }
 
+  animando = true;
   const anguloPorSegmento = 360 / n;
-  const vueltas = Math.floor(Math.random() * 5) + 5; // 5 a 9 vueltas
-
-  // Elegimos un índice al azar
+  const vueltas = Math.floor(Math.random() * 5) + 5;
   const ganadorIndex = Math.floor(Math.random() * n);
 
-  // Calculamos la rotación para que la flecha apunte al centro del sector elegido
-  const anguloDestino = vueltas * 360 + anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2;
+  const rotacionDestino = rotacionActual + vueltas * 360 + anguloPorSegmento * ganadorIndex + anguloPorSegmento / 2;
+  const duracion = 6000; // ms
+  const inicio = performance.now();
 
-  rotacionTotal += anguloDestino;
-
-  // Rotación de la ruleta
-  ruleta.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
-  ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
-
-  // Animación de flecha apuntando al ganador por 2s
   const flecha = document.querySelector('.flecha');
   flecha.style.transition = 'transform 0.5s ease';
-  setTimeout(() => {
-    mostrarGanador(disponibles[ganadorIndex]);
 
-    // Flecha “celebra” 2s
-    flecha.style.transform = 'translateX(-50%) translateY(-15px)';
-    setTimeout(() => {
-      flecha.style.transform = 'translateX(-50%) translateY(0)';
-    }, 2000);
+  function animar(time) {
+    const t = Math.min((time - inicio) / duracion, 1);
+    const eased = t < 0.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1; // easing
+    rotacionActual = rotacionActual + (rotacionDestino - rotacionActual) * eased;
+    renderRuleta(rotacionActual);
 
-    // Eliminamos al ganador y renderizamos ruleta
-    disponibles.splice(ganadorIndex, 1);
-    renderRuleta();
-  }, 6200); // coincide con la duración de la animación
+    if (t < 1) {
+      requestAnimationFrame(animar);
+    } else {
+      // Mostrar ganador y animar flecha 2s
+      mostrarGanador(disponibles[ganadorIndex]);
+      flecha.style.transform = 'translateX(-50%) translateY(-15px)';
+      setTimeout(() => {
+        flecha.style.transform = 'translateX(-50%) translateY(0)';
+      }, 2000);
+
+      // Eliminar ganador y actualizar ruleta
+      disponibles.splice(ganadorIndex, 1);
+      renderRuleta(rotacionActual);
+      animando = false;
+    }
+  }
+
+  requestAnimationFrame(animar);
 });
 
-
 // Render inicial
-renderRuleta();
+renderRuleta(rotacionActual);
