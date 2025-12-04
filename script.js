@@ -4,6 +4,7 @@ const agregarBtn = document.getElementById('agregar');
 const sortearBtn = document.getElementById('sortear');
 const mensaje = document.getElementById('mensaje-ganador');
 const sonidoRuleta = document.getElementById('audio-ruleta');
+const sonidoGanador = document.getElementById('sonido-ganador');
 
 const canvas = document.getElementById('ruletaCanvas');
 const ctx = canvas.getContext('2d');
@@ -85,6 +86,12 @@ function mostrarGanador(nombre) {
   mensaje.textContent = `  ¡El ganador es: ${nombre}!  `;
   mensaje.style.transform = 'scale(1.2)';
   setTimeout(() => mensaje.style.transform = 'scale(1)', 500);
+  // Reproducir sonido de ganador (ding)
+  sonidoGanador.currentTime = 0;
+  const playPromise = sonidoGanador.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(error => console.log("Error reproducir sonido:", error));
+  }
 }
 
 // Agregar nombre
