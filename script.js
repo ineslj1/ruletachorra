@@ -118,13 +118,11 @@ sortearBtn.addEventListener('click', () => {
     return;
   }
 
-  // Si hay un ganador actual, eliminarlo antes de girar
   if (ganadorActual) {
     const index = disponibles.indexOf(ganadorActual);
     if (index !== -1) disponibles.splice(index, 1);
     ganadorActual = null;
     renderRuleta(rotacionActual);
-    // Si no quedan nombres después de eliminar, no girar
     if (disponibles.length === 0) return;
   }
 
@@ -137,6 +135,11 @@ sortearBtn.addEventListener('click', () => {
   const inicio = performance.now();
 
   const flecha = document.querySelector('.flecha');
+
+  // AUDIO: iniciar al girar
+  sonidoRuleta.currentTime = 0;
+  sonidoRuleta.play();
+
   flecha.style.transition = 'transform 0.5s ease';
 
   function animar(time) {
@@ -148,32 +151,33 @@ sortearBtn.addEventListener('click', () => {
 
     if (t < 1) requestAnimationFrame(animar);
     else {
-      const n = disponibles.length;
       const anguloFinal = (rotacionDestino % 360 + 360) % 360;
       const anguloPorSegmento = 360 / n;
-
       let anguloRelativo = (270 - anguloFinal + 360) % 360;
       const indexGanador = Math.floor(anguloRelativo / anguloPorSegmento);
       const ganador = disponibles[indexGanador];
 
-      // Guardamos como ganador actual
       ganadorActual = ganador;
 
       mostrarGanador(ganador);
-
-      // Flecha permanece levantada mientras no se gire otra vez
       flecha.style.transform = 'translateX(-50%) translateY(-15px)';
 
-      // Actualizamos rotación
+      // AUDIO: detener al terminar
+      sonidoRuleta.pause();
+      sonidoRuleta.currentTime = 0;
+
+      // CONFETTI
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.4 } });
+
       rotacionActual = rotacionDestino % 360;
       renderRuleta(rotacionActual);
-
       animando = false;
     }
   }
 
   requestAnimationFrame(animar);
 });
+
 
 
 
