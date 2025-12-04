@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ruleta Mágica</title>
+
+<style>
+    body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #ffd6f6, #d6e1ff);
+        text-align: center;
+        padding: 40px;
+        color: #444;
+    }
+
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 15px;
+        color: #ff4fb0;
+        text-shadow: 0 0 10px #fff;
+    }
+
+    textarea {
+        width: 80%;
+        height: 120px;
+        padding: 10px;
+        border-radius: 12px;
+        border: none;
+        outline: none;
+        font-size: 1em;
+        box-shadow: 0 0 10px #ffbde7;
+        margin-bottom: 10px;
+    }
+
+    button {
+        padding: 12px 25px;
+        margin: 10px;
+        border: none;
+        border-radius: 20px;
+        background: #ff7bd5;
+        color: white;
+        font-size: 1.1em;
+        cursor: pointer;
+        box-shadow: 0 0 15px #ff9be2;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.07);
+        background: #ff5cc6;
+    }
+
+    #resultado {
+        margin-top: 25px;
+        font-size: 1.8em;
+        font-weight: bold;
+        color: #6b2fff;
+        text-shadow: 0 0 8px white;
+    }
+
+    .ruleta {
+        margin: 30px auto;
+        width: 220px;
+        height: 220px;
+        background: conic-gradient(#ff9be2, #9bb0ff, #a0ffe7, #ffd8a8, #ff9be2);
+        border-radius: 50%;
+        animation: girar 0s linear infinite paused;
+        box-shadow: 0 0 20px #ffffffaa;
+    }
+
+    @keyframes girar {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .epico {
+        animation: brillo 0.5s ease-out;
+    }
+
+    @keyframes brillo {
+        0% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.15); filter: brightness(2); }
+        100% { transform: scale(1); filter: brightness(1); }
+    }
+</style>
+</head>
+
+<body>
+    <h1>🎀 Ruleta Mágica del Destino 🎀</h1>
+
+    <p>Escribe los nombres del equipo (uno por línea):</p>
+    <textarea id="lista"></textarea><br />
+
+    <button onclick="cargarNombres()">Cargar nombres</button>
+    <button onclick="girarRuleta()">Girar ruleta</button>
+
+    <div class="ruleta" id="ruleta"></div>
+
+    <div id="resultado"></div>
+
+<script>
+    let nombres = [];
+
+    function cargarNombres() {
+        const texto = document.getElementById("lista").value.trim();
+        nombres = texto.split("\n").map(n => n.trim()).filter(n => n);
+
+        if (nombres.length === 0) {
+            alert("❗ Agrega al menos un nombre.");
+            return;
+        }
+
+        alert("✨ ¡Nombres cargados! ✨");
+    }
+
+    function girarRuleta() {
+        if (nombres.length === 0) {
+            document.getElementById("resultado").textContent =
+                "🎉 ¡Juego terminado! No quedan nombres.";
+            return;
+        }
+
+        const ruleta = document.getElementById("ruleta");
+        ruleta.style.animationDuration = "0.4s";
+        ruleta.style.animationPlayState = "running";
+
+        setTimeout(() => {
+            ruleta.style.animationPlayState = "paused";
+
+            const elegido = nombres[Math.floor(Math.random() * nombres.length)];
+
+            // Quitar el nombre elegido
+            nombres = nombres.filter(n => n !== elegido);
+
+            const resultado = document.getElementById("resultado");
+            resultado.textContent = `✨ Nombre seleccionado: ${elegido} ✨`;
+            resultado.classList.add("epico");
+
+            setTimeout(() => {
+                resultado.classList.remove("epico");
+            }, 500);
+
+        }, 1600);
+    }
+</script>
+
+</body>
+</html>
