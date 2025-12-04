@@ -81,7 +81,7 @@ function renderRuleta(rotacion = 0) {
 
 // Mostrar ganador
 function mostrarGanador(nombre) {
-  mensaje.textContent = `🎉 ¡El ganador es: ${nombre}! 🎉`;
+  mensaje.textContent = ` ¡El ganador es: ${nombre}! `;
   mensaje.style.transform = 'scale(1.2)';
   setTimeout(() => mensaje.style.transform = 'scale(1)', 500);
 }
