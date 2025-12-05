@@ -70,14 +70,14 @@ h1 {
 }
 
 #sortear {
-  background: #71f3d2;
+  background: #4b4b4b;
   color: #fff;
   border: none;
   padding: 15px 25px;
   border-radius: 25px;
   font-size: 1.2em;
   cursor: pointer;
-  box-shadow: 0 5px #1ef0bc;
+  box-shadow: 0 5px #0f0f0f;
   transition: 0.2s;
 }
 
